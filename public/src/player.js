@@ -1,6 +1,9 @@
 require([], function () {
   var SPRITE_PLAYER = 1;
-  var SPRITE_BULLET = 2;  
+  var SPRITE_BULLET = 2;
+
+  var UP = "up";
+  var DOWN = "down";  
 
   Q.Sprite.extend('Player', {
     init: function (p) {
@@ -10,7 +13,8 @@ require([], function () {
         invincible: false,
         vyMult: 1,
         type: SPRITE_PLAYER,
-        health: 100
+        health: 100,
+        //direction: NORTH
       });
 
       this.add('2d, platformerControls, animation');
@@ -33,20 +37,49 @@ require([], function () {
     step: function (dt) {
       if (Q.inputs['up']) {
         this.p.vy = -200 * this.p.vyMult;
+        this.p.direction = UP;
       } else if (Q.inputs['down']) {
         this.p.vy = 200 * this.p.vyMult;
+        this.p.direction = DOWN;
       } else if (!Q.inputs['down'] && !Q.inputs['up']) {
         this.p.vy = 0;
       }
+      console.log(this.p.direction);
       this.p.socket.emit('update', { playerId: this.p.playerId, x: this.p.x, y: this.p.y, sheet: this.p.sheet, opacity: this.p.opacity, invincible: this.p.invincible, tagged: this.p.tagged });
     },
 
     shoot: function() {        
         var p = this.p;
+        var speed = 400;
+        var newVx = 0;
+        var newVy = 0;
+        var newPx = 0;
+        var newPy = 0;
+
+        switch (this.p.direction){
+          case "up":
+            newVy = speed * (-1);
+            newPy = -p.w;
+          break;          
+          case "down":
+            newVy = speed;
+            newPy = p.w;
+          break;
+          case "left":
+            newVx = speed * (-1);
+            newPx = -p.h;
+          break;
+          case "right":
+            newVx = speed;            
+            newPx = p.h;
+          break
+        }
+        
         this.stage.insert(new Q.Bullet({
-            x: p.x,
-            y: p.y - p.w,
-            vy: -400
+            x: p.x + newPx,
+            y: p.y + newPy,
+            vy: newVy,
+            vx: newVx
         }))
     }
   });
