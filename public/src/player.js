@@ -2,22 +2,6 @@ require([], function () {
   var SPRITE_PLAYER = 1;
   var SPRITE_BULLET = 2;  
 
-  // Q.Sprite.extend('Actor', {
-  //   init: function (p) {
-  //     this._super(p, {
-  //       update: true
-  //     });
-
-  //     var temp = this;
-  //     setInterval(function () {
-  //       if (!temp.p.update) {
-  //         temp.destroy();
-  //       }
-  //       temp.p.update = false;
-  //     }, 3000);
-  //   } 
-  // });
-
   Q.Sprite.extend('Player', {
     init: function (p) {
       this._super(p, {
@@ -34,38 +18,16 @@ require([], function () {
       this.addEventListeners();
     },
     addEventListeners: function () {
-      this.on('hit', function (collision) {
-        if (this.p.tagged && collision.obj.isA('Actor') && !collision.obj.p.tagged && !collision.obj.p.invincible) {
-          this.p.socket.emit('tag', { playerId: collision.obj.p.playerId });
-          this.p.tagged = false;
-          this.p.sheet = 'player';
-          this.p.invincible = true;
-          this.p.opacity = 0.5;
-          this.p.speed = 300;
-          this.p.vyMult = 1.5;
-          var temp = this;
-          setTimeout(function () {
-            temp.p.invincible = false;
-            temp.p.opacity = 1;
-            temp.p.speed = 200;
-            temp.p.vyMult = 1;
-          }, 3000);
-        }
-      });
-
-      this.on('join', function () {
-        this.p.invincible = true;
-        this.p.opacity = 0.5;
-        this.p.speed = 300;
-        this.p.vyMult = 1.5;
-        var temp = this;
-        setTimeout(function () {
-          temp.p.invincible = false;
-          temp.p.opacity = 1;
-          temp.p.speed = 200;
-          temp.p.vyMult = 1;
-        }, 3000);
-      });
+      
+      this.on('hit', function(col){
+          if (col.obj.isA("Bullet")) {
+              col.obj.destroy();
+              this.p.health -= 10;                            
+              if (this.p.health <= 0){
+                this.destroy();                
+              }              
+          }                
+      });      
     },
 
     step: function (dt) {
@@ -83,7 +45,7 @@ require([], function () {
         var p = this.p;
         this.stage.insert(new Q.Bullet({
             x: p.x,
-            y: p.y - p.w/2,
+            y: p.y - p.w,
             vy: -400
         }))
     }
