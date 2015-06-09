@@ -8,7 +8,7 @@ require([], function () {
   Q.Sprite.extend('Player', {
     init: function (p) {
       this._super(p, {
-        sheet: 'player',
+        sheet: 'tank_up',
         tagged: false,
         invincible: false,
         vyMult: 1,
@@ -44,7 +44,23 @@ require([], function () {
       } else if (!Q.inputs['down'] && !Q.inputs['up']) {
         this.p.vy = 0;
       }
-      console.log(this.p.direction);
+//      console.log(this.p.direction);
+      
+      switch (this.p.direction){
+          case "up":
+          this.p.sheet = "tank_up";
+          break;          
+          case "down":
+          this.p.sheet = "tank_down";
+          break;
+          case "left":
+          this.p.sheet = "tank_left";
+          break;
+          case "right":
+          this.p.sheet = "tank_right";
+          break
+        }
+
       this.p.socket.emit('update', { playerId: this.p.playerId, x: this.p.x, y: this.p.y, sheet: this.p.sheet, opacity: this.p.opacity, invincible: this.p.invincible, tagged: this.p.tagged });
     },
 
@@ -92,16 +108,18 @@ require([], function () {
               type: SPRITE_BULLET,
               collisionMask: SPRITE_PLAYER,
               sensor: true,
-              prevY: 0
+              prevY: 0,
+              prevX: 0
           });
           this.add("2d");
       },
       
       step: function(dt) {
-          if (this.p.y  == this.prevY) {
+        if (this.p.y  == this.prevY && this.p.x  == this.prevX) {
               this.destroy();
           }
           this.prevY = this.p.y;
+          this.prevX = this.p.x;
       }
   });
 });
