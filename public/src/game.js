@@ -9,7 +9,7 @@ Q.gravityY = 0;
 require(['socket.io/socket.io.js']);
 
 var players = [];
-var socket = io.connect('http://ka44m-project.herokuapp.com:3000');
+var socket = io.connect('https://ka44m-project.herokuapp.com/');
 var UiPlayers = document.getElementById("players");
 var selfId, player;
 
