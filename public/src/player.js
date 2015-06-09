@@ -13,8 +13,7 @@ require([], function () {
         invincible: false,
         vyMult: 1,
         type: SPRITE_PLAYER,
-        health: 100,
-        //direction: NORTH
+        health: 100,        
       });
 
       this.add('2d, platformerControls, animation');
@@ -24,6 +23,9 @@ require([], function () {
     addEventListeners: function () {
       
       this.on('hit', function(col){
+        if (this.p.bullet == col.obj) {
+          return;
+        }
           if (col.obj.isA("Bullet")) {
               col.obj.destroy();
               this.p.health -= 10;                            
@@ -44,7 +46,6 @@ require([], function () {
       } else if (!Q.inputs['down'] && !Q.inputs['up']) {
         this.p.vy = 0;
       }
-//      console.log(this.p.direction);
       
       switch (this.p.direction){
           case "up":
@@ -75,41 +76,44 @@ require([], function () {
         switch (this.p.direction){
           case "up":
             newVy = speed * (-1);
-            newPy = -p.w;
+            newPy = -p.w/2;
           break;          
           case "down":
             newVy = speed;
-            newPy = p.w;
+            newPy = p.w/2;
           break;
           case "left":
             newVx = speed * (-1);
-            newPx = -p.h;
+            newPx = -p.h/2;
           break;
           case "right":
             newVx = speed;            
-            newPx = p.h;
+            newPx = p.h/2;
           break
         }
         
-        this.stage.insert(new Q.Bullet({
+        var bullet = new Q.Bullet({
             x: p.x + newPx,
             y: p.y + newPy,
             vy: newVy,
-            vx: newVx
-        }))
+            vx: newVx,
+            owner: p
+        });
+        this.p.bullet = bullet;
+        this.stage.insert(bullet);
     }
   });
 
   Q.MovingSprite.extend("Bullet", {
       init: function(p) {
           this._super(p, {
-              sheet: "bullet",
-              //sprite: "enemy",
+              sheet: "bullet",              
               type: SPRITE_BULLET,
               collisionMask: SPRITE_PLAYER,
               sensor: true,
               prevY: 0,
-              prevX: 0
+              prevX: 0,
+              owner: null
           });
           this.add("2d");
       },
