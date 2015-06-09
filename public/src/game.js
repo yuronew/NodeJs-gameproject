@@ -9,7 +9,7 @@ Q.gravityY = 0;
 require(['socket.io/socket.io.js']);
 
 var players = [];
-var socket = io.connect('https://ka44m-project.herokuapp.com/');
+var socket = io.connect('http://localhost:3000/');
 var UiPlayers = document.getElementById("players");
 var selfId, player;
 
@@ -51,9 +51,9 @@ require(objectFiles, function () {
         actor.player.p.tagged = data['tagged'];
         actor.player.p.update = true;
       } else {
-        var temp = new Q.Actor({ playerId: data['playerId'], x: data['x'], y: data['y'], sheet: data['sheet'], opacity: data['opacity'], invincible: data['invincible'], tagged: data['tagged'] });
-        players.push({ player: temp, playerId: data['playerId'] });
-        stage.insert(temp);
+        // var temp = new Q.Actor({ playerId: data['playerId'], x: data['x'], y: data['y'], sheet: data['sheet'], opacity: data['opacity'], invincible: data['invincible'], tagged: data['tagged'] });
+        // players.push({ player: temp, playerId: data['playerId'] });
+        // stage.insert(temp);
       }
     });
 
