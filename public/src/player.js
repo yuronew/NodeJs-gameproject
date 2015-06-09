@@ -2,22 +2,6 @@ require([], function () {
   var SPRITE_PLAYER = 1;
   var SPRITE_BULLET = 2;  
 
-  Q.Sprite.extend('Actor', {
-    init: function (p) {
-      this._super(p, {
-        update: true
-      });
-
-      var temp = this;
-      setInterval(function () {
-        if (!temp.p.update) {
-          temp.destroy();
-        }
-        temp.p.update = false;
-      }, 3000);
-    } 
-  });
-
   Q.Sprite.extend('Player', {
     init: function (p) {
       this._super(p, {
