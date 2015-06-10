@@ -10,6 +10,7 @@ require(['socket.io/socket.io.js']);
 
 var players = [];
 var socket = io.connect('https://ka44m-project.herokuapp.com/');
+//var socket = io.connect('http://localhost:3000');
 var UiPlayers = document.getElementById("players");
 var selfId, player;
 
@@ -55,6 +56,21 @@ require(objectFiles, function () {
         players.push({ player: temp, playerId: data['playerId'] });
         stage.insert(temp);
       }
+    });
+
+    socket.on('sent-bullet', function(data) {
+       var px = data['bulletX'];
+       var py = data['bulletY'];
+       var pvx = data['bulletVx'];
+       var pvy = data['bulletVy'];
+
+       var bullet = new Q.Bullet({
+            x: px,
+            y: py,
+            vy: pvy,
+            vx: pvx,            
+        });
+       stage.insert(bullet);
     });
 
     socket.on('tagged', function (data) {

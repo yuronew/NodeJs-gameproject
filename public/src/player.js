@@ -18,7 +18,24 @@ require([], function () {
         }
         temp.p.update = false;
       }, 3000);
-    } 
+    },
+
+    addEventListeners: function () {
+      
+      this.on('hit', function(col){
+        if (this.p.bullet == col.obj) {
+          return;
+        }
+          if (col.obj.isA("Bullet")) {
+              col.obj.destroy();
+              this.p.health -= 10;                            
+              if (this.p.health <= 0){
+                this.destroy();                
+              }              
+          }                
+      });      
+    },
+
   });
 
   Q.Sprite.extend('Player', {
@@ -116,6 +133,7 @@ require([], function () {
             owner: p
         });
         this.p.bullet = bullet;
+        this.p.socket.emit('send-bullet', { bulletX: bullet.p.x, bulletY: bullet.p.y, bulletVx: bullet.p.vx, bulletVy: bullet.p.vy});        
         this.stage.insert(bullet);
     }
   });
