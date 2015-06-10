@@ -5,6 +5,22 @@ require([], function () {
   var UP = "up";
   var DOWN = "down";  
 
+  Q.Sprite.extend('Actor', {
+    init: function (p) {
+      this._super(p, {
+        update: true
+      });
+
+      var temp = this;
+      setInterval(function () {
+        if (!temp.p.update) {
+          temp.destroy();
+        }
+        temp.p.update = false;
+      }, 3000);
+    } 
+  });
+
   Q.Sprite.extend('Player', {
     init: function (p) {
       this._super(p, {
